@@ -7,77 +7,113 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --green: #0D3B2E;
-      --green-mid: #155C44;
-      --green-light: #1E7A58;
-      --gold: #F5A623;
-      --gold-light: #FBBF5A;
-      --cream: #FDF6EC;
-      --cream-dark: #F0E6D2;
-      --charcoal: #1A1A1A;
-      --text-muted: #5A5A5A;
-      --white: #ffffff;
-      --radius: 12px;
-      --shadow: 0 8px 40px rgba(13,59,46,0.15);
+      --green: #0D3B2E; --green-mid: #155C44; --green-light: #1E7A58;
+      --gold: #F5A623; --gold-light: #FBBF5A;
+      --cream: #FDF6EC; --cream-dark: #F0E6D2;
+      --charcoal: #1A1A1A; --text-muted: #5A5A5A; --white: #ffffff;
+      --radius: 12px; --shadow: 0 8px 40px rgba(13,59,46,0.15);
     }
-
     html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--charcoal); overflow-x: hidden; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--cream);
-      color: var(--charcoal);
-      overflow-x: hidden;
+    /* ═══ SIDE MENU ═══ */
+    .side-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
     }
+    .side-overlay.open { opacity: 1; pointer-events: all; }
+    .side-menu {
+      position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
+      background: var(--green); z-index: 201;
+      transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column;
+      box-shadow: 4px 0 40px rgba(0,0,0,0.4);
+    }
+    .side-menu.open { left: 0; }
+    .side-menu-header {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .side-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem;
+      color: var(--gold); letter-spacing: 2px; text-decoration: none;
+    }
+    .side-logo span { color: var(--white); }
+    .side-close {
+      background: rgba(255,255,255,0.1); border: none; color: var(--white);
+      width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .side-close:hover { background: rgba(255,255,255,0.2); }
+    .side-nav { padding: 24px 0; flex: 1; overflow-y: auto; }
+    .side-nav-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: rgba(255,255,255,0.3);
+      padding: 0 24px 10px;
+    }
+    .side-nav a {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 24px; color: rgba(255,255,255,0.75);
+      text-decoration: none; font-size: 0.95rem; font-weight: 500;
+      transition: background 0.2s, color 0.2s; border-left: 3px solid transparent;
+    }
+    .side-nav a:hover { background: rgba(255,255,255,0.07); color: var(--white); border-left-color: var(--gold); }
+    .side-nav a .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+    .side-nav-sep { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 16px 24px; }
+    .side-cats { padding: 0 24px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .side-cat-pill {
+      background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.65);
+      font-size: 0.75rem; padding: 6px 12px; border-radius: 50px;
+      text-decoration: none; transition: background 0.2s, color 0.2s;
+    }
+    .side-cat-pill:hover { background: var(--gold); color: var(--green); }
+    .side-menu-footer {
+      padding: 20px 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .side-wa-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: #25D366; color: var(--white);
+      font-weight: 700; font-size: 0.9rem;
+      padding: 12px 20px; border-radius: 50px; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .side-wa-btn:hover { background: #1ebe5d; }
 
-    /* ─── NAV ─── */
+    /* ═══ NAV ═══ */
     nav {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 60px;
-      background: rgba(13,59,46,0.97);
-      backdrop-filter: blur(10px);
+      padding: 18px 48px;
+      background: rgba(13,59,46,0.97); backdrop-filter: blur(10px);
     }
-    .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.6rem;
-      color: var(--gold);
-      letter-spacing: 2px;
-      text-decoration: none;
+    .nav-left { display: flex; align-items: center; gap: 16px; }
+    .hamburger {
+      background: rgba(255,255,255,0.1); border: none;
+      color: var(--white); width: 40px; height: 40px;
+      border-radius: 10px; cursor: pointer; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
     }
+    .hamburger:hover { background: rgba(255,255,255,0.2); }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--gold); letter-spacing: 2px; text-decoration: none; }
     .nav-logo span { color: var(--white); }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a {
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.83rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; }
     .nav-links a:hover { color: var(--gold); }
-    .nav-cta {
-      background: var(--gold);
-      color: var(--green) !important;
-      padding: 10px 22px;
-      border-radius: 50px;
-      font-weight: 700 !important;
-      color: var(--green);
-      transition: background 0.2s, transform 0.2s !important;
-    }
-    .nav-cta:hover { background: var(--gold-light) !important; transform: translateY(-1px); }
+    .nav-cta { background: var(--gold); color: var(--green) !important; padding: 10px 22px; border-radius: 50px; font-weight: 700 !important; transition: background 0.2s !important; }
+    .nav-cta:hover { background: var(--gold-light) !important; }
+    @media(max-width:700px){ .nav-links { display: none; } nav { padding: 14px 20px; } }
 
-    /* ─── HERO ─── */
+    /* ═══ HERO ═══ */
     .hero {
-      min-height: 100vh;
-      background: var(--green);
-      display: flex; align-items: center;
-      position: relative;
-      overflow: hidden;
-      padding: 120px 60px 80px;
+      min-height: 100vh; background: var(--green);
+      display: flex; align-items: center; position: relative; overflow: hidden;
+      padding: 130px 60px 80px;
     }
     .hero-bg-pattern {
       position: absolute; inset: 0;
@@ -85,529 +121,280 @@
         repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 40px);
     }
     .hero-shield {
-      position: absolute; right: -40px; top: 50%;
-      transform: translateY(-50%);
-      width: 560px; height: 560px;
-      opacity: 0.07;
+      position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+      width: 520px; height: 520px; opacity: 0.07;
     }
-    .hero-content { position: relative; z-index: 2; max-width: 700px; }
+    .hero-content { position: relative; z-index: 2; max-width: 680px; }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(245,166,35,0.15);
-      border: 1px solid rgba(245,166,35,0.3);
-      color: var(--gold);
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 8px 16px;
-      border-radius: 50px;
-      margin-bottom: 28px;
+      background: rgba(245,166,35,0.15); border: 1px solid rgba(245,166,35,0.3);
+      color: var(--gold); font-size: 0.78rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; padding: 8px 16px; border-radius: 50px; margin-bottom: 28px;
     }
-    .hero-eyebrow::before { content: '✦'; font-size: 0.6rem; }
-    .hero-headline {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3.5rem, 7vw, 6.5rem);
-      line-height: 0.95;
-      color: var(--white);
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-    }
+    .hero-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.2rem, 7vw, 6rem); line-height: 0.95; color: var(--white); margin-bottom: 12px; letter-spacing: 1px; }
     .hero-headline .gold { color: var(--gold); }
-    .hero-subheadline {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.35rem;
-      color: rgba(255,255,255,0.55);
-      margin-bottom: 28px;
-    }
-    .hero-desc {
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.75);
-      line-height: 1.75;
-      max-width: 560px;
-      margin-bottom: 44px;
-    }
-    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: var(--gold);
-      color: var(--green);
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 16px 32px;
-      border-radius: 50px;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(245,166,35,0.4);
-    }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,166,35,0.5); }
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 10px;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.95rem;
-      font-weight: 500;
-      text-decoration: none;
-      padding: 16px 20px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 50px;
-      transition: border-color 0.2s, color 0.2s;
-    }
+    .hero-subheadline { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.25rem; color: rgba(255,255,255,0.5); margin-bottom: 24px; }
+    .hero-desc { font-size: 1rem; color: rgba(255,255,255,0.72); line-height: 1.75; max-width: 540px; margin-bottom: 40px; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--gold); color: var(--green); font-weight: 700; font-size: 1rem; padding: 16px 32px; border-radius: 50px; text-decoration: none; transition: all 0.2s; box-shadow: 0 4px 20px rgba(245,166,35,0.4); }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.75); font-size: 0.92rem; font-weight: 500; text-decoration: none; padding: 16px 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; transition: all 0.2s; }
     .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
-    .hero-stats {
-      display: flex; gap: 40px; margin-top: 56px;
-      padding-top: 40px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    .hero-stat-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.2rem;
-      color: var(--gold);
-      line-height: 1;
-    }
-    .hero-stat-label {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-top: 4px;
-    }
+    .hero-stats { display: flex; gap: 36px; margin-top: 52px; padding-top: 36px; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+    .hero-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); line-height: 1; }
+    .hero-stat-label { font-size: 0.77rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    @media(max-width:700px){ .hero { padding: 110px 20px 64px; } .hero-shield { display:none; } .hero-stats { gap: 20px; } }
 
-    /* ─── TRUST STRIP ─── */
-    .trust-strip {
-      background: var(--gold);
-      padding: 18px 60px;
-      display: flex; align-items: center; justify-content: center; gap: 48px;
-      flex-wrap: wrap;
-      overflow: hidden;
-    }
-    .trust-item {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--green);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-    }
-    .trust-item span { font-size: 1.1rem; }
+    /* ═══ TRUST STRIP ═══ */
+    .trust-strip { background: var(--gold); padding: 16px 48px; display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .trust-item { display: flex; align-items: center; gap: 9px; font-size: 0.83rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
 
-    /* ─── SECTION COMMON ─── */
-    section { padding: 100px 60px; }
-    .section-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--green-light);
-      margin-bottom: 14px;
-    }
-    .section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.4rem, 4vw, 3.5rem);
-      line-height: 1;
-      color: var(--green);
-      margin-bottom: 16px;
-    }
-    .section-desc {
-      font-size: 1rem;
-      color: var(--text-muted);
-      line-height: 1.7;
-      max-width: 540px;
-    }
+    /* ═══ SECTION COMMON ═══ */
+    section { padding: 96px 60px; }
+    .section-label { display: inline-block; font-size: 0.73rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--green-light); margin-bottom: 12px; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 4vw, 3.2rem); line-height: 1; color: var(--green); margin-bottom: 14px; }
+    .section-desc { font-size: 0.97rem; color: var(--text-muted); line-height: 1.7; max-width: 520px; }
+    @media(max-width:700px){ section { padding: 64px 20px; } }
 
-    /* ─── HOW IT WORKS ─── */
+    /* ═══ HOW IT WORKS ═══ */
     .how-it-works { background: var(--white); }
-    .how-header { text-align: center; margin-bottom: 64px; }
+    .how-header { text-align: center; margin-bottom: 60px; }
     .how-header .section-desc { margin: 0 auto; }
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0;
-      max-width: 1100px; margin: 0 auto;
-      position: relative;
-    }
-    .steps-grid::before {
-      content: '';
-      position: absolute;
-      top: 52px; left: 10%; right: 10%;
-      height: 2px;
-      background: linear-gradient(to right, var(--gold), var(--green-light));
-      z-index: 0;
-    }
-    .step {
-      text-align: center;
-      padding: 0 28px;
-      position: relative; z-index: 1;
-    }
-    .step-icon {
-      width: 104px; height: 104px;
-      background: var(--cream);
-      border: 3px solid var(--gold);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 24px;
-      font-size: 2.2rem;
-      position: relative;
-      transition: transform 0.3s, background 0.3s;
-    }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; max-width: 1100px; margin: 0 auto; position: relative; }
+    .steps-grid::before { content: ''; position: absolute; top: 52px; left: 10%; right: 10%; height: 2px; background: linear-gradient(to right, var(--gold), var(--green-light)); z-index: 0; }
+    .step { text-align: center; padding: 0 24px; position: relative; z-index: 1; }
+    .step-icon { width: 104px; height: 104px; background: var(--cream); border: 3px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 22px; font-size: 2rem; position: relative; transition: transform 0.3s, background 0.3s; }
     .step:hover .step-icon { background: var(--gold); transform: scale(1.08); }
-    .step-num {
-      position: absolute; top: -6px; right: -6px;
-      width: 28px; height: 28px;
-      background: var(--green);
-      color: var(--white);
-      font-size: 0.7rem;
-      font-weight: 700;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .step h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.4rem;
-      color: var(--green);
-      margin-bottom: 10px;
-      letter-spacing: 0.5px;
-    }
-    .step p {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.65;
-    }
+    .step-num { position: absolute; top: -6px; right: -6px; width: 28px; height: 28px; background: var(--green); color: var(--white); font-size: 0.68rem; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .step h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; color: var(--green); margin-bottom: 9px; letter-spacing: 0.5px; }
+    .step p { font-size: 0.87rem; color: var(--text-muted); line-height: 1.6; }
+    .fee-callout { background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%); padding: 56px; border-radius: 20px; max-width: 1100px; margin: 60px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 36px; flex-wrap: wrap; }
+    .fee-left h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; color: var(--white); margin-bottom: 8px; }
+    .fee-left p { color: rgba(255,255,255,0.62); font-size: 0.93rem; line-height: 1.6; max-width: 420px; }
+    .fee-badge { background: var(--gold); color: var(--green); font-family: 'Bebas Neue', sans-serif; font-size: 3.8rem; padding: 18px 32px; border-radius: 16px; line-height: 1; white-space: nowrap; box-shadow: 0 8px 30px rgba(245,166,35,0.4); }
+    .fee-badge small { font-size: 1.2rem; }
+    @media(max-width:700px){ .steps-grid::before { display:none; } .steps-grid { gap: 28px; } .fee-callout { padding: 32px 24px; flex-direction: column; text-align: center; } }
 
-    /* ─── FEE CALLOUT ─── */
-    .fee-callout {
-      background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
-      padding: 60px;
-      border-radius: 20px;
-      max-width: 1100px; margin: 64px auto 0;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 40px; flex-wrap: wrap;
-    }
-    .fee-left h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem; color: var(--white); margin-bottom: 8px;
-    }
-    .fee-left p { color: rgba(255,255,255,0.65); font-size: 0.95rem; line-height: 1.6; max-width: 420px; }
-    .fee-badge {
-      background: var(--gold);
-      color: var(--green);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 4rem;
-      padding: 20px 36px;
-      border-radius: 16px;
-      line-height: 1;
-      white-space: nowrap;
-      box-shadow: 0 8px 30px rgba(245,166,35,0.4);
-    }
-    .fee-badge small { font-size: 1.3rem; }
-
-    /* ─── CATEGORIES ─── */
+    /* ═══ CATEGORIES ═══ */
     .categories { background: var(--cream); }
-    .categories-header { margin-bottom: 48px; }
-    .cat-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-      gap: 16px;
-      max-width: 1100px;
-    }
-    .cat-card {
-      background: var(--white);
-      border: 2px solid transparent;
-      border-radius: var(--radius);
-      padding: 28px 20px;
-      text-align: center;
-      cursor: pointer;
-      text-decoration: none;
-      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
-    }
-    .cat-card:hover {
-      border-color: var(--gold);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow);
-    }
-    .cat-emoji { font-size: 2.2rem; }
-    .cat-name {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--green);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .cat-note { font-size: 0.75rem; color: var(--text-muted); }
+    .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 14px; max-width: 1100px; }
+    .cat-card { background: var(--white); border: 2px solid transparent; border-radius: var(--radius); padding: 26px 18px; text-align: center; cursor: pointer; text-decoration: none; transition: all 0.25s; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .cat-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: var(--shadow); }
+    .cat-emoji { font-size: 2rem; }
+    .cat-name { font-size: 0.82rem; font-weight: 600; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; }
+    .cat-note { font-size: 0.73rem; color: var(--text-muted); }
 
-    /* ─── WHY US ─── */
+    /* ═══ WHY US ═══ */
     .why-us { background: var(--white); }
-    .why-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      max-width: 1100px; margin: 0 auto;
-      align-items: center;
-    }
-    .why-visual {
-      background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
-      border-radius: 20px;
-      padding: 60px 40px;
-      position: relative; overflow: hidden;
-    }
-    .why-visual::before {
-      content: '🛡️';
-      position: absolute; right: -20px; bottom: -20px;
-      font-size: 10rem; opacity: 0.12;
-    }
-    .why-big-stat {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 5rem;
-      color: var(--gold);
-      line-height: 1;
-    }
-    .why-big-label { color: rgba(255,255,255,0.7); font-size: 1rem; margin-top: 8px; }
-    .why-divider { border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 28px 0; }
-    .why-mini-stats { display: flex; gap: 32px; }
-    .why-mini-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--gold); }
-    .why-mini-label { font-size: 0.78rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
-    .why-points { list-style: none; display: flex; flex-direction: column; gap: 20px; }
-    .why-point {
-      display: flex; gap: 18px; align-items: flex-start;
-    }
-    .why-point-icon {
-      width: 44px; height: 44px; flex-shrink: 0;
-      background: var(--cream);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-    }
-    .why-point h4 { font-size: 0.95rem; font-weight: 700; color: var(--green); margin-bottom: 4px; }
-    .why-point p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.55; }
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; max-width: 1100px; margin: 0 auto; align-items: center; }
+    @media(max-width:900px){ .why-grid { grid-template-columns: 1fr; } }
+    .why-visual { background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%); border-radius: 20px; padding: 56px 36px; position: relative; overflow: hidden; }
+    .why-visual::before { content: '🛡️'; position: absolute; right: -20px; bottom: -20px; font-size: 9rem; opacity: 0.12; }
+    .why-big-stat { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; color: var(--gold); line-height: 1; }
+    .why-big-label { color: rgba(255,255,255,0.65); font-size: 0.97rem; margin-top: 7px; }
+    .why-divider { border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 24px 0; }
+    .why-mini-stats { display: flex; gap: 28px; }
+    .why-mini-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--gold); }
+    .why-mini-label { font-size: 0.75rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; }
+    .why-points { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+    .why-point { display: flex; gap: 16px; align-items: flex-start; }
+    .why-point-icon { width: 42px; height: 42px; flex-shrink: 0; background: var(--cream); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .why-point h4 { font-size: 0.92rem; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+    .why-point p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.55; }
 
-    /* ─── ORDER FORM ─── */
-    .order-section {
-      background: var(--green);
-      position: relative; overflow: hidden;
-    }
-    .order-section::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px);
-    }
-    .order-inner {
-      position: relative; z-index: 2;
-      max-width: 800px; margin: 0 auto;
-      text-align: center;
-    }
+    /* ═══ ORDER SECTION ═══ */
+    .order-section { background: var(--green); position: relative; overflow: hidden; }
+    .order-section::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px); }
+    .order-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; text-align: center; }
     .order-inner .section-label { color: var(--gold-light); }
     .order-inner .section-title { color: var(--white); margin-bottom: 8px; }
-    .order-inner .section-desc { color: rgba(255,255,255,0.6); margin: 0 auto 48px; }
+    .order-inner .section-desc { color: rgba(255,255,255,0.55); margin: 0 auto 44px; }
 
-    .order-form {
-      background: var(--white);
-      border-radius: 20px;
-      padding: 48px;
-      text-align: left;
-      box-shadow: 0 20px 80px rgba(0,0,0,0.3);
-    }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .form-full { grid-column: 1 / -1; }
-    .form-group { display: flex; flex-direction: column; gap: 7px; }
-    .form-group label {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--green);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-    .form-group label .req { color: var(--gold); }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 13px 16px;
-      border: 2px solid var(--cream-dark);
-      border-radius: 10px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      color: var(--charcoal);
-      background: var(--cream);
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none;
-      appearance: none;
-    }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      border-color: var(--green-light);
-      box-shadow: 0 0 0 4px rgba(30,122,88,0.1);
-      background: var(--white);
-    }
-    .form-group textarea { resize: vertical; min-height: 110px; }
-    .form-group select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230D3B2E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 40px;
-      cursor: pointer;
-    }
-    .form-hint {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-    .form-divider {
-      border: none;
-      border-top: 2px dashed var(--cream-dark);
-      margin: 28px 0;
-    }
-    .form-section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--green-light);
-      margin-bottom: 18px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .form-section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--cream-dark);
-    }
-    .whatsapp-notice {
-      display: flex; align-items: center; gap: 14px;
-      background: #e8f8ef;
-      border: 1px solid #b2dfcc;
-      border-radius: 10px;
-      padding: 14px 18px;
-      margin-bottom: 28px;
-      font-size: 0.85rem;
-      color: #155C44;
-    }
-    .whatsapp-notice strong { font-weight: 700; }
-    .btn-submit {
-      width: 100%;
-      padding: 18px;
-      background: var(--gold);
-      color: var(--green);
-      font-family: 'Inter', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(245,166,35,0.4);
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .btn-submit:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,166,35,0.5); }
-    .form-footer-note {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 16px;
-    }
+    /* ═══ MULTI-STEP FORM ═══ */
+    .order-form { background: var(--white); border-radius: 20px; padding: 44px; text-align: left; box-shadow: 0 20px 80px rgba(0,0,0,0.35); }
+    @media(max-width:700px){ .order-form { padding: 24px 18px; } }
 
-    /* ─── FOOTER ─── */
-    footer {
-      background: var(--charcoal);
-      padding: 60px;
-      display: flex; gap: 48px; flex-wrap: wrap;
-      justify-content: space-between;
-    }
-    .footer-brand .nav-logo { display: block; margin-bottom: 14px; font-size: 1.8rem; }
-    .footer-tagline { font-size: 0.85rem; color: rgba(255,255,255,0.45); line-height: 1.6; max-width: 260px; }
-    .footer-col h4 {
-      font-size: 0.75rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 2px;
-      color: var(--gold); margin-bottom: 16px;
-    }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .footer-col ul li a {
-      font-size: 0.87rem;
-      color: rgba(255,255,255,0.5);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-col ul li a:hover { color: var(--white); }
-    .footer-whatsapp {
-      display: flex; align-items: center; gap: 12px;
-      background: #25D366;
-      color: var(--white);
-      font-weight: 700;
-      font-size: 0.95rem;
-      padding: 14px 24px;
-      border-radius: 50px;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-      margin-top: 8px;
-    }
-    .footer-whatsapp:hover { background: #1ebe5d; transform: translateY(-2px); }
-    .footer-bottom {
-      background: #111;
-      padding: 20px 60px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 12px;
-    }
-    .footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
-
-    /* ─── FLOATING WHATSAPP ─── */
-    .float-wa {
-      position: fixed; bottom: 28px; right: 28px; z-index: 999;
-      width: 60px; height: 60px;
-      background: #25D366;
-      border-radius: 50%;
+    /* Progress bar */
+    .progress-wrap { margin-bottom: 36px; }
+    .progress-steps { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; position: relative; }
+    .progress-line { position: absolute; top: 18px; left: 0; right: 0; height: 3px; background: var(--cream-dark); z-index: 0; border-radius: 3px; }
+    .progress-line-fill { position: absolute; top: 18px; left: 0; height: 3px; background: var(--gold); z-index: 1; border-radius: 3px; transition: width 0.5s ease; }
+    .progress-step-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--cream-dark); border: 3px solid var(--cream-dark);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.7rem;
-      text-decoration: none;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.5);
-      transition: transform 0.2s, box-shadow 0.2s;
+      font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
+      z-index: 2; position: relative; transition: all 0.3s; cursor: pointer;
+      flex-shrink: 0;
     }
-    .float-wa:hover { transform: scale(1.12); box-shadow: 0 8px 30px rgba(37,211,102,0.6); }
-    .float-wa-pulse {
-      position: absolute;
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      background: rgba(37,211,102,0.35);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(2); opacity: 0; }
-    }
+    .progress-step-dot.done { background: var(--green); border-color: var(--green); color: var(--white); }
+    .progress-step-dot.active { background: var(--gold); border-color: var(--gold); color: var(--green); transform: scale(1.15); }
+    .progress-labels { display: flex; justify-content: space-between; }
+    .progress-label-item { font-size: 0.67rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); text-align: center; flex: 1; transition: color 0.3s; }
+    .progress-label-item.active { color: var(--green); }
 
-    /* ─── MOBILE ─── */
-    @media (max-width: 768px) {
-      nav { padding: 16px 20px; }
-      .nav-links { display: none; }
-      section { padding: 72px 20px; }
-      .hero { padding: 100px 20px 72px; }
-      .hero-headline { font-size: 3.2rem; }
-      .hero-shield { display: none; }
-      .hero-stats { gap: 24px; flex-wrap: wrap; }
-      .steps-grid::before { display: none; }
-      .steps-grid { gap: 32px; }
-      .fee-callout { padding: 36px 28px; flex-direction: column; text-align: center; }
-      .why-grid { grid-template-columns: 1fr; }
-      .form-grid { grid-template-columns: 1fr; }
-      .order-form { padding: 28px 20px; }
-      footer { padding: 48px 20px; flex-direction: column; gap: 36px; }
-      .footer-bottom { padding: 16px 20px; }
-      .trust-strip { padding: 14px 20px; gap: 20px; }
-    }
+    /* Steps */
+    .form-step { display: none; animation: fadeStep 0.35s ease; }
+    .form-step.active { display: block; }
+    @keyframes fadeStep { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* ─── REVEAL ANIMATION ─── */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .step-heading { margin-bottom: 28px; }
+    .step-heading h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--green); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .step-heading p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+
+    .form-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
+    .form-group label { font-size: 0.78rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.8px; }
+    .form-group label .req { color: var(--gold); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 13px 16px;
+      border: 2px solid var(--cream-dark); border-radius: 10px;
+      font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--charcoal);
+      background: var(--cream); transition: border-color 0.2s, box-shadow 0.2s; outline: none; appearance: none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--green-light); box-shadow: 0 0 0 4px rgba(30,122,88,0.1); background: var(--white); }
+    .form-group textarea { resize: vertical; min-height: 108px; }
+    .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230D3B2E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; cursor: pointer; }
+    .form-hint { font-size: 0.74rem; color: var(--text-muted); margin-top: 2px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media(max-width:600px){ .form-row { grid-template-columns: 1fr; } }
+
+    /* Budget toggle */
+    .budget-toggle { display: flex; gap: 0; margin-bottom: 16px; border: 2px solid var(--cream-dark); border-radius: 10px; overflow: hidden; }
+    .budget-toggle button {
+      flex: 1; padding: 11px; background: none; border: none;
+      font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600;
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+    .budget-toggle button.active { background: var(--green); color: var(--white); }
+    .budget-field, .budget-unknown { transition: all 0.2s; }
+    .budget-unknown { display: none; }
+    .budget-unknown.show { display: block; }
+    .budget-field.hide { display: none; }
+
+    /* Photo upload */
+    .photo-upload-area {
+      border: 2px dashed var(--cream-dark); border-radius: 12px;
+      padding: 32px 20px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s; background: var(--cream);
+      position: relative;
+    }
+    .photo-upload-area:hover { border-color: var(--green-light); background: #f0f9f5; }
+    .photo-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .photo-upload-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .photo-upload-text { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+    .photo-upload-text strong { color: var(--green); }
+    .photo-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .photo-thumb { position: relative; width: 80px; height: 80px; border-radius: 8px; overflow: hidden; border: 2px solid var(--green-light); }
+    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-thumb-remove { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.6); color: var(--white); border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* Seller source section */
+    .seller-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .seller-option {
+      display: flex; align-items: flex-start; gap: 14px;
+      border: 2px solid var(--cream-dark); border-radius: 12px; padding: 16px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .seller-option:hover { border-color: var(--gold); }
+    .seller-option.selected { border-color: var(--green); background: #f0f9f5; }
+    .seller-option input[type="radio"] { margin-top: 2px; accent-color: var(--green); }
+    .seller-option-label { font-size: 0.88rem; font-weight: 600; color: var(--charcoal); }
+    .seller-option-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+    .seller-detail-field { margin-top: 12px; display: none; }
+    .seller-detail-field.show { display: block; }
+
+    /* WhatsApp notice */
+    .whatsapp-notice { display: flex; align-items: center; gap: 14px; background: #e8f8ef; border: 1px solid #b2dfcc; border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; font-size: 0.84rem; color: #155C44; }
+
+    /* Form nav buttons */
+    .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; gap: 12px; }
+    .btn-back { background: none; border: 2px solid var(--cream-dark); color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; padding: 13px 24px; border-radius: 50px; cursor: pointer; transition: all 0.2s; }
+    .btn-back:hover { border-color: var(--green); color: var(--green); }
+    .btn-next { background: var(--green); color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 700; padding: 14px 32px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 9px; }
+    .btn-next:hover { background: var(--green-light); transform: translateY(-1px); }
+    .btn-submit-final { width: 100%; background: var(--gold); color: var(--green); font-family: 'Inter', sans-serif; font-size: 1.05rem; font-weight: 800; padding: 18px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(245,166,35,0.4); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 28px; }
+    .btn-submit-final:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .form-step-counter { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+
+    /* Summary step */
+    .summary-card { background: var(--cream); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
+    .summary-card h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green-light); margin-bottom: 14px; }
+    .summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--cream-dark); font-size: 0.88rem; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row .label { color: var(--text-muted); }
+    .summary-row .value { font-weight: 600; color: var(--charcoal); text-align: right; max-width: 60%; word-break: break-word; }
+    .summary-fee-row { display: flex; justify-content: space-between; padding: 14px 0; border-top: 2px solid var(--cream-dark); margin-top: 8px; font-size: 0.95rem; font-weight: 700; }
+    .summary-fee-row .fee-amount { color: var(--green); font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; }
+
+    /* ═══ FOOTER ═══ */
+    footer { background: var(--charcoal); padding: 56px 60px; display: flex; gap: 44px; flex-wrap: wrap; justify-content: space-between; }
+    .footer-brand .nav-logo { display: block; margin-bottom: 12px; font-size: 1.7rem; }
+    .footer-tagline { font-size: 0.83rem; color: rgba(255,255,255,0.4); line-height: 1.6; max-width: 240px; }
+    .footer-col h4 { font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--gold); margin-bottom: 14px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .footer-col ul li a { font-size: 0.85rem; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--white); }
+    .footer-wa { display: flex; align-items: center; gap: 10px; background: #25D366; color: var(--white); font-weight: 700; font-size: 0.92rem; padding: 13px 22px; border-radius: 50px; text-decoration: none; transition: all 0.2s; margin-top: 8px; }
+    .footer-wa:hover { background: #1ebe5d; transform: translateY(-2px); }
+    .footer-bottom { background: #111; padding: 18px 60px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .footer-bottom p { font-size: 0.76rem; color: rgba(255,255,255,0.25); }
+    @media(max-width:700px){ footer { padding: 44px 20px; flex-direction: column; gap: 32px; } .footer-bottom { padding: 16px 20px; } }
+
+    /* ═══ FLOAT WA ═══ */
+    .float-wa { position: fixed; bottom: 26px; right: 26px; z-index: 99; width: 58px; height: 58px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,0.5); transition: transform 0.2s; }
+    .float-wa:hover { transform: scale(1.12); }
+    .float-wa-pulse { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: rgba(37,211,102,0.35); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ═══ SIDE MENU OVERLAY ═══ -->
+<div class="side-overlay" id="sideOverlay" onclick="closeMenu()"></div>
+<div class="side-menu" id="sideMenu">
+  <div class="side-menu-header">
+    <a href="#" class="side-logo">K&amp;<span>K</span> LOGISTICS</a>
+    <button class="side-close" onclick="closeMenu()">✕</button>
+  </div>
+  <div class="side-nav">
+    <div class="side-nav-label">Navigation</div>
+    <a href="#" onclick="closeMenu()"><span class="icon">🏠</span> Home</a>
+    <a href="#how" onclick="closeMenu()"><span class="icon">🔄</span> How It Works</a>
+    <a href="#categories" onclick="closeMenu()"><span class="icon">📦</span> Categories</a>
+    <a href="#why" onclick="closeMenu()"><span class="icon">🛡️</span> Why Choose Us</a>
+    <a href="#order" onclick="closeMenu()"><span class="icon">📝</span> Place an Order</a>
+    <hr class="side-nav-sep" />
+    <div class="side-nav-label">Browse Categories</div>
+    <div class="side-cats">
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">💊 Health</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">✨ Beauty</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">📱 Electronics</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">👗 Fashion</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">🍼 Baby</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">🍳 Kitchen</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">🌾 Agriculture</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">🚗 Auto Parts</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">💻 Computers</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">🔌 Electrical</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">🏗️ Hardware</a>
+      <a href="#order" class="side-cat-pill" onclick="closeMenu()">📦 Other</a>
+    </div>
+  </div>
+  <div class="side-menu-footer">
+    <a href="https://wa.me/256779710365" target="_blank" class="side-wa-btn">💬 WhatsApp Us Now</a>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
 <nav>
-  <a href="#" class="nav-logo">K&amp;<span>K</span> LOGISTICS</a>
+  <div class="nav-left">
+    <button class="hamburger" onclick="openMenu()" title="Menu">☰</button>
+    <a href="#" class="nav-logo">K&amp;<span>K</span> LOGISTICS</a>
+  </div>
   <ul class="nav-links">
     <li><a href="#how">How It Works</a></li>
     <li><a href="#categories">Categories</a></li>
@@ -616,7 +403,7 @@
   </ul>
 </nav>
 
-<!-- HERO -->
+<!-- ═══ HERO ═══ -->
 <section class="hero">
   <div class="hero-bg-pattern"></div>
   <svg class="hero-shield" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -625,111 +412,62 @@
     <polyline points="70,108 90,128 135,83" stroke="#F5A623" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   </svg>
   <div class="hero-content">
-    <div class="hero-eyebrow">Uganda's Trusted Procurement Service</div>
-    <h1 class="hero-headline">
-      WE BUY.<br>
-      WE <span class="gold">VERIFY.</span><br>
-      YOU RECEIVE.
-    </h1>
+    <div class="hero-eyebrow">✦ Uganda's Trusted Procurement Service</div>
+    <h1 class="hero-headline">WE BUY.<br>WE <span class="gold">VERIFY.</span><br>YOU RECEIVE.</h1>
     <p class="hero-subheadline">From Kampala to your doorstep — safely.</p>
-    <p class="hero-desc">
-      Shopping from Kampala just got safe, easy, and affordable. Tell us what you need, 
-      we physically go to the shop, verify the product, and deliver it straight to you — 
-      no matter which district you're in.
-    </p>
+    <p class="hero-desc">Shopping from Kampala just got safe, easy, and affordable. Tell us what you need, we physically go to the shop, verify the product, and deliver it to you — anywhere in Uganda.</p>
     <div class="hero-actions">
-      <a href="#order" class="btn-primary">
-        📦 Place Your Order
-      </a>
-      <a href="#how" class="btn-secondary">
-        See how it works →
-      </a>
+      <a href="#order" class="btn-primary">📦 Place Your Order</a>
+      <a href="#how" class="btn-secondary">See how it works →</a>
     </div>
     <div class="hero-stats">
-      <div>
-        <div class="hero-stat-num">135+</div>
-        <div class="hero-stat-label">Districts Served</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">10%</div>
-        <div class="hero-stat-label">Service Fee Only</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">10K</div>
-        <div class="hero-stat-label">Min. Order (UGX)</div>
-      </div>
-      <div>
-        <div class="hero-stat-num">100%</div>
-        <div class="hero-stat-label">Verified Products</div>
-      </div>
+      <div><div class="hero-stat-num">135+</div><div class="hero-stat-label">Districts Served</div></div>
+      <div><div class="hero-stat-num">10%</div><div class="hero-stat-label">Service Fee Only</div></div>
+      <div><div class="hero-stat-num">10K</div><div class="hero-stat-label">Min. Order (UGX)</div></div>
+      <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">Verified Products</div></div>
     </div>
   </div>
 </section>
 
-<!-- TRUST STRIP -->
+<!-- ═══ TRUST STRIP ═══ -->
 <div class="trust-strip">
-  <div class="trust-item"><span>✅</span> Product Verification</div>
-  <div class="trust-item"><span>🛡️</span> Anti-Fraud Protection</div>
-  <div class="trust-item"><span>📦</span> Safe Delivery Nationwide</div>
-  <div class="trust-item"><span>📱</span> WhatsApp Updates</div>
-  <div class="trust-item"><span>💰</span> Mobile Money Payments</div>
+  <div class="trust-item">✅ Product Verification</div>
+  <div class="trust-item">🛡️ Anti-Fraud Protection</div>
+  <div class="trust-item">📦 Safe Delivery Nationwide</div>
+  <div class="trust-item">📱 WhatsApp Updates</div>
+  <div class="trust-item">💰 Mobile Money Payments</div>
 </div>
 
-<!-- HOW IT WORKS -->
+<!-- ═══ HOW IT WORKS ═══ -->
 <section class="how-it-works" id="how">
   <div class="how-header reveal">
     <span class="section-label">The Process</span>
-    <h2 class="section-title">How Kevin & Klein Works</h2>
+    <h2 class="section-title">How Kevin &amp; Klein Works</h2>
     <p class="section-desc">Six simple steps from your request to your doorstep. No risk, no fraud, no wasted transport money.</p>
   </div>
   <div class="steps-grid">
-    <div class="step reveal">
-      <div class="step-icon">📝<span class="step-num">1</span></div>
-      <h3>Fill the Form</h3>
-      <p>Tell us what you want, where to find it, and where to deliver. Include your WhatsApp number.</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-icon">💬<span class="step-num">2</span></div>
-      <h3>We Confirm</h3>
-      <p>We contact you on WhatsApp to confirm your order details, quote the full cost, and agree on payment.</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-icon">💳<span class="step-num">3</span></div>
-      <h3>You Pay</h3>
-      <p>Send the product cost + our 10% service fee via MTN or Airtel Mobile Money. Fully secure.</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-icon">🏪<span class="step-num">4</span></div>
-      <h3>We Shop</h3>
-      <p>Our team physically visits the shop, verifies the product quality, and purchases exactly what you ordered.</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-icon">📸<span class="step-num">5</span></div>
-      <h3>We Verify</h3>
-      <p>We send you photos of the actual product before dispatching, so you see what you're getting.</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-icon">🚚<span class="step-num">6</span></div>
-      <h3>We Deliver</h3>
-      <p>Your package is dispatched via trusted transport. You get tracking updates until it reaches you.</p>
-    </div>
+    <div class="step reveal"><div class="step-icon">📝<span class="step-num">1</span></div><h3>Fill the Form</h3><p>Tell us what you want, where to find it, and where to deliver — one step at a time.</p></div>
+    <div class="step reveal"><div class="step-icon">💬<span class="step-num">2</span></div><h3>We Confirm</h3><p>We contact you on WhatsApp to confirm your order details and agree on payment.</p></div>
+    <div class="step reveal"><div class="step-icon">💳<span class="step-num">3</span></div><h3>You Pay</h3><p>Send the product cost + our 10% service fee via MTN or Airtel Mobile Money. Fully secure.</p></div>
+    <div class="step reveal"><div class="step-icon">🏪<span class="step-num">4</span></div><h3>We Shop</h3><p>Our team physically visits the shop, verifies product quality, and buys exactly what you ordered.</p></div>
+    <div class="step reveal"><div class="step-icon">📸<span class="step-num">5</span></div><h3>We Verify</h3><p>We send you photos of the actual product before dispatching. What you see is what you get.</p></div>
+    <div class="step reveal"><div class="step-icon">🚚<span class="step-num">6</span></div><h3>We Deliver</h3><p>Your package is dispatched via trusted transport. WhatsApp updates until it reaches you.</p></div>
   </div>
-
   <div class="fee-callout reveal">
     <div class="fee-left">
       <h3>Simple, Transparent Pricing</h3>
-      <p>We charge a flat 10% on your total purchase amount. That's it. No hidden charges, no surprises. If you're ordering UGX 100,000 worth of items, our fee is just UGX 10,000 — far less than what you'd spend traveling to Kampala yourself. Minimum order is UGX 10,000.</p>
+      <p>We charge a flat 10% on your total purchase amount. If you're ordering UGX 100,000 worth of items, our fee is just UGX 10,000 — far less than what you'd spend traveling to Kampala yourself. Minimum order: UGX 10,000.</p>
     </div>
     <div class="fee-badge">10%<br><small>service fee</small></div>
   </div>
 </section>
 
-<!-- CATEGORIES -->
+<!-- ═══ CATEGORIES ═══ -->
 <section class="categories" id="categories">
-  <div class="categories-header reveal">
+  <div class="reveal" style="margin-bottom:44px">
     <span class="section-label">What We Procure</span>
     <h2 class="section-title">Every Category, Every Shop</h2>
-    <p class="section-desc">If it's sold in Kampala, we can get it for you. From supermarkets to specialized stores.</p>
+    <p class="section-desc">If it's sold in Kampala, we can get it for you.</p>
   </div>
   <div class="cat-grid reveal">
     <a href="#order" class="cat-card"><div class="cat-emoji">💊</div><div class="cat-name">Health &amp; Pharmacy</div><div class="cat-note">Medicines, supplements</div></a>
@@ -751,7 +489,7 @@
   </div>
 </section>
 
-<!-- WHY US -->
+<!-- ═══ WHY US ═══ -->
 <section class="why-us" id="why">
   <div class="why-grid">
     <div class="why-visual reveal">
@@ -759,111 +497,120 @@
       <div class="why-big-label">Fraud cases with Kevin &amp; Klein</div>
       <hr class="why-divider">
       <div class="why-mini-stats">
-        <div>
-          <div class="why-mini-num">All 135</div>
-          <div class="why-mini-label">Districts covered</div>
-        </div>
-        <div>
-          <div class="why-mini-num">Real Shops</div>
-          <div class="why-mini-label">Physical verification</div>
-        </div>
+        <div><div class="why-mini-num">All 135</div><div class="why-mini-label">Districts covered</div></div>
+        <div><div class="why-mini-num">Real Shops</div><div class="why-mini-label">Physical verification</div></div>
       </div>
     </div>
     <div class="reveal">
       <span class="section-label">Why Choose Us</span>
       <h2 class="section-title">We Solve the Real Problems</h2>
       <ul class="why-points">
-        <li class="why-point">
-          <div class="why-point-icon">🛡️</div>
-          <div>
-            <h4>Protection from Online Fraud</h4>
-            <p>Fake online sellers are a serious problem in Uganda. We physically go to the location — you never pay a fraudster again.</p>
-          </div>
-        </li>
-        <li class="why-point">
-          <div class="why-point-icon">💰</div>
-          <div>
-            <h4>Save on Transport Costs</h4>
-            <p>A round trip from Mbale to Kampala costs UGX 60,000. Our fee on a 100K order is just 10K. The math works every time.</p>
-          </div>
-        </li>
-        <li class="why-point">
-          <div class="why-point-icon">📸</div>
-          <div>
-            <h4>Photo Proof Before Dispatch</h4>
-            <p>We send you clear photos of the actual product we bought before it leaves Kampala. What you see is what you get.</p>
-          </div>
-        </li>
-        <li class="why-point">
-          <div class="why-point-icon">📱</div>
-          <div>
-            <h4>WhatsApp All the Way</h4>
-            <p>Every update — from confirmation to delivery — comes to your WhatsApp. No apps to install, no accounts to create.</p>
-          </div>
-        </li>
-        <li class="why-point">
-          <div class="why-point-icon">🏪</div>
-          <div>
-            <h4>We Reach Any Shop You Specify</h4>
-            <p>Tell us the exact shop, market stall, or online seller you want us to visit. We go there, verify, and buy on your behalf.</p>
-          </div>
-        </li>
+        <li class="why-point"><div class="why-point-icon">🛡️</div><div><h4>Protection from Online Fraud</h4><p>Fake online sellers are a serious problem in Uganda. We physically go to the location — you never pay a fraudster again.</p></div></li>
+        <li class="why-point"><div class="why-point-icon">💰</div><div><h4>Save on Transport Costs</h4><p>A round trip Mbale–Kampala costs UGX 60,000. Our fee on a 100K order is just 10K. The math works every time.</p></div></li>
+        <li class="why-point"><div class="why-point-icon">📸</div><div><h4>Photo Proof Before Dispatch</h4><p>We send you clear photos of the actual product before it leaves Kampala. What you see is what you get.</p></div></li>
+        <li class="why-point"><div class="why-point-icon">📱</div><div><h4>WhatsApp All the Way</h4><p>Every update — from confirmation to delivery — comes to your WhatsApp. No apps to install, no accounts to create.</p></div></li>
+        <li class="why-point"><div class="why-point-icon">🏪</div><div><h4>We Reach Any Shop You Specify</h4><p>Give us a TikTok link, a Facebook page, a phone number, or a shop name. We go there and buy on your behalf.</p></div></li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ORDER FORM -->
+<!-- ═══ ORDER FORM ═══ -->
 <section class="order-section" id="order">
   <div class="order-inner">
     <span class="section-label">Place Your Order</span>
     <h2 class="section-title">TELL US WHAT YOU NEED</h2>
-    <p class="section-desc">Fill in the details below and we'll reach out to you on WhatsApp within a few hours to confirm your order.</p>
+    <p class="section-desc">Just 4 quick steps — fill in your details and we'll reach out on WhatsApp to confirm everything.</p>
 
     <div class="order-form reveal">
-      <div class="whatsapp-notice">
-        <span style="font-size:1.5rem">💬</span>
-        <div><strong>WhatsApp Connected:</strong> Once you submit, your order details go directly to our team on WhatsApp. We'll reply to confirm and quote within hours.</div>
+
+      <!-- Progress Bar -->
+      <div class="progress-wrap">
+        <div class="progress-steps">
+          <div class="progress-line"></div>
+          <div class="progress-line-fill" id="progressFill"></div>
+          <div class="progress-step-dot active" id="dot-1" onclick="goToStep(1)">1</div>
+          <div class="progress-step-dot" id="dot-2" onclick="goToStep(2)">2</div>
+          <div class="progress-step-dot" id="dot-3" onclick="goToStep(3)">3</div>
+          <div class="progress-step-dot" id="dot-4" onclick="goToStep(4)">4</div>
+        </div>
+        <div class="progress-labels">
+          <div class="progress-label-item active" id="lbl-1">Your Details</div>
+          <div class="progress-label-item" id="lbl-2">The Product</div>
+          <div class="progress-label-item" id="lbl-3">The Seller</div>
+          <div class="progress-label-item" id="lbl-4">Review &amp; Send</div>
+        </div>
       </div>
 
-      <div class="form-section-label">Your Details</div>
-      <div class="form-grid">
+      <!-- STEP 1: Your Details -->
+      <div class="form-step active" id="step-1">
+        <div class="step-heading">
+          <h3>👤 Who Are You?</h3>
+          <p>Let us know who we're helping and where to reach you.</p>
+        </div>
         <div class="form-group">
           <label>Full Name <span class="req">*</span></label>
-          <input type="text" id="f-name" placeholder="e.g. Nakato Sarah" required />
+          <input type="text" id="f-name" placeholder="e.g. Nakato Sarah" />
         </div>
         <div class="form-group">
           <label>WhatsApp Number <span class="req">*</span></label>
-          <input type="tel" id="f-whatsapp" placeholder="e.g. 0779710365" required />
-          <span class="form-hint">We'll confirm your order here</span>
+          <input type="tel" id="f-whatsapp" placeholder="e.g. 0779123456" />
+          <span class="form-hint">We'll send you confirmation, photos &amp; updates here</span>
         </div>
-        <div class="form-group">
-          <label>Your District <span class="req">*</span></label>
-          <select id="f-district">
-            <option value="">— Select your district —</option>
-            <optgroup label="Central Region">
-              <option>Kampala</option><option>Wakiso</option><option>Mukono</option><option>Mpigi</option><option>Butebo</option><option>Luwero</option><option>Kayunga</option><option>Kiboga</option><option>Nakaseke</option>
-            </optgroup>
-            <optgroup label="Eastern Region">
-              <option>Mbale</option><option>Jinja</option><option>Soroti</option><option>Tororo</option><option>Iganga</option><option>Kamuli</option><option>Bugiri</option><option>Busia</option><option>Mayuge</option><option>Pallisa</option><option>Sironko</option><option>Kapchorwa</option><option>Kumi</option><option>Katakwi</option><option>Budaka</option><option>Butaleja</option><option>Manafwa</option><option>Namutumba</option>
-            </optgroup>
-            <optgroup label="Northern Region">
-              <option>Gulu</option><option>Lira</option><option>Arua</option><option>Kitgum</option><option>Apac</option><option>Nebbi</option><option>Moroto</option><option>Kotido</option><option>Adjumani</option><option>Moyo</option><option>Amuru</option><option>Nwoya</option><option>Pader</option><option>Agago</option><option>Lamwo</option>
-            </optgroup>
-            <optgroup label="Western Region">
-              <option>Mbarara</option><option>Fort Portal</option><option>Masindi</option><option>Kasese</option><option>Kabale</option><option>Bushenyi</option><option>Hoima</option><option>Ntungamo</option><option>Rukungiri</option><option>Kisoro</option><option>Kanungu</option><option>Kyenjojo</option><option>Kibale</option><option>Ibanda</option><option>Kiruhura</option><option>Buhweju</option>
-            </optgroup>
-          </select>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your District <span class="req">*</span></label>
+            <select id="f-district">
+              <option value="">— Select district —</option>
+              <optgroup label="Central Region">
+                <option>Kampala</option><option>Wakiso</option><option>Mukono</option><option>Mpigi</option><option>Luwero</option><option>Kayunga</option><option>Kiboga</option><option>Nakaseke</option>
+              </optgroup>
+              <optgroup label="Eastern Region">
+                <option>Mbale</option><option>Jinja</option><option>Soroti</option><option>Tororo</option><option>Iganga</option><option>Kamuli</option><option>Bugiri</option><option>Busia</option><option>Mayuge</option><option>Pallisa</option><option>Sironko</option><option>Kapchorwa</option><option>Kumi</option><option>Katakwi</option><option>Budaka</option><option>Butaleja</option><option>Manafwa</option><option>Namutumba</option>
+              </optgroup>
+              <optgroup label="Northern Region">
+                <option>Gulu</option><option>Lira</option><option>Arua</option><option>Kitgum</option><option>Apac</option><option>Nebbi</option><option>Moroto</option><option>Kotido</option><option>Adjumani</option><option>Moyo</option><option>Amuru</option><option>Nwoya</option><option>Pader</option><option>Agago</option><option>Lamwo</option>
+              </optgroup>
+              <optgroup label="Western Region">
+                <option>Mbarara</option><option>Fort Portal</option><option>Masindi</option><option>Kasese</option><option>Kabale</option><option>Bushenyi</option><option>Hoima</option><option>Ntungamo</option><option>Rukungiri</option><option>Kisoro</option><option>Kanungu</option><option>Kyenjojo</option><option>Kibale</option><option>Ibanda</option><option>Kiruhura</option><option>Buhweju</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Town / Village <span class="req">*</span></label>
+            <input type="text" id="f-town" placeholder="e.g. Mbale Town" />
+          </div>
         </div>
-        <div class="form-group">
-          <label>Specific Town / Village <span class="req">*</span></label>
-          <input type="text" id="f-town" placeholder="e.g. Mbale Town, Naluwerere village" required />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Preferred Delivery</label>
+            <select id="f-delivery">
+              <option>Bus / Taxi (I'll pick up at park)</option>
+              <option>Deliver to my address</option>
+              <option>I'll arrange pickup with you</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Urgency</label>
+            <select id="f-urgency">
+              <option>Normal (2–5 days)</option>
+              <option>Urgent (24–48 hrs)</option>
+              <option>Flexible — no rush</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-nav">
+          <span class="form-step-counter">Step 1 of 4</span>
+          <button class="btn-next" onclick="nextStep(1)">Continue →</button>
         </div>
       </div>
 
-      <hr class="form-divider" />
-      <div class="form-section-label">Product Details</div>
-      <div class="form-grid">
+      <!-- STEP 2: The Product -->
+      <div class="form-step" id="step-2">
+        <div class="step-heading">
+          <h3>📦 What Do You Need?</h3>
+          <p>Describe the product as clearly as you can — brand, size, color, quantity. The more detail, the better.</p>
+        </div>
         <div class="form-group">
           <label>Product Category <span class="req">*</span></label>
           <select id="f-category">
@@ -887,72 +634,152 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Estimated Budget (UGX) <span class="req">*</span></label>
-          <input type="number" id="f-budget" placeholder="e.g. 50000" min="10000" />
-          <span class="form-hint">Minimum order: UGX 10,000</span>
-        </div>
-        <div class="form-group form-full">
           <label>Product Description <span class="req">*</span></label>
-          <textarea id="f-product" placeholder="Describe exactly what you want — brand, size, color, quantity, model number, or any specific details. The more detail you give, the better we can serve you."></textarea>
+          <textarea id="f-product" placeholder="e.g. Nivea natural glow body lotion 400ml, 2 bottles. Must be the blue lid version."></textarea>
         </div>
-        <div class="form-group form-full">
-          <label>Shop / Seller to Buy From (optional)</label>
-          <input type="text" id="f-shop" placeholder="e.g. Quality Supermarket Kampala Road, or an online seller's page link" />
-          <span class="form-hint">If you know a specific shop or online seller, tell us. Otherwise we'll find the best option.</span>
+
+        <!-- Budget toggle -->
+        <div class="form-group">
+          <label>Budget / Price <span class="req">*</span></label>
+          <div class="budget-toggle">
+            <button class="active" id="btn-know-price" onclick="setBudgetMode('known')">I know the price</button>
+            <button id="btn-dont-know" onclick="setBudgetMode('unknown')">I don't know the price</button>
+          </div>
+          <div class="budget-field" id="budgetField">
+            <input type="number" id="f-budget" placeholder="Enter amount in UGX e.g. 50000" min="10000" />
+            <span class="form-hint">Minimum order: UGX 10,000</span>
+          </div>
+          <div class="budget-unknown" id="budgetUnknown">
+            <input type="text" id="f-budget-range" placeholder="e.g. Around 30,000–50,000 or 'not sure, find best price'" />
+            <span class="form-hint">We'll find the best price and confirm with you on WhatsApp before buying</span>
+          </div>
+        </div>
+
+        <!-- Photo upload -->
+        <div class="form-group">
+          <label>Attach Photos (optional)</label>
+          <div class="photo-upload-area" id="photoArea">
+            <input type="file" id="f-photos" accept="image/*" multiple onchange="handlePhotos(event)" />
+            <div class="photo-upload-icon">📷</div>
+            <div class="photo-upload-text">
+              <strong>Tap to add photos</strong><br>
+              Screenshot of the product, post, or seller's page.<br>
+              <span style="font-size:0.75rem;color:var(--text-muted)">JPG, PNG — up to 5 images</span>
+            </div>
+          </div>
+          <div class="photo-preview" id="photoPreview"></div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="prevStep(2)">← Back</button>
+          <button class="btn-next" onclick="nextStep(2)">Continue →</button>
         </div>
       </div>
 
-      <hr class="form-divider" />
-      <div class="form-section-label">Delivery Info</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Preferred Delivery Method</label>
-          <select id="f-delivery">
-            <option>Bus / Taxi (I'll pick up at park)</option>
-            <option>Deliver to my address (extra charges may apply)</option>
-            <option>I'll arrange pickup with you</option>
-          </select>
+      <!-- STEP 3: The Seller -->
+      <div class="form-step" id="step-3">
+        <div class="step-heading">
+          <h3>🏪 Who Should We Buy From?</h3>
+          <p>Do you have a specific seller in mind? If so, how can we find them? Pick the best option below.</p>
         </div>
-        <div class="form-group">
-          <label>Urgency</label>
-          <select id="f-urgency">
-            <option>Normal (2–5 days)</option>
-            <option>Urgent (within 24–48 hrs)</option>
-            <option>Flexible (no rush)</option>
-          </select>
+
+        <div class="seller-options">
+          <label class="seller-option" id="opt-shop" onclick="selectSeller('shop')">
+            <input type="radio" name="sellerType" value="shop" />
+            <div>
+              <div class="seller-option-label">🏪 Physical Shop Name</div>
+              <div class="seller-option-sub">e.g. Quality Chemist Kampala Road, Garden City supermarket</div>
+            </div>
+          </label>
+          <label class="seller-option" id="opt-tiktok" onclick="selectSeller('tiktok')">
+            <input type="radio" name="sellerType" value="tiktok" />
+            <div>
+              <div class="seller-option-label">🎵 TikTok Shop / Video Link</div>
+              <div class="seller-option-sub">Paste the TikTok video or shop link — we'll reach them</div>
+            </div>
+          </label>
+          <label class="seller-option" id="opt-facebook" onclick="selectSeller('facebook')">
+            <input type="radio" name="sellerType" value="facebook" />
+            <div>
+              <div class="seller-option-label">📘 Facebook Page / Marketplace Link</div>
+              <div class="seller-option-sub">Paste the Facebook page or listing link</div>
+            </div>
+          </label>
+          <label class="seller-option" id="opt-phone" onclick="selectSeller('phone')">
+            <input type="radio" name="sellerType" value="phone" />
+            <div>
+              <div class="seller-option-label">📞 Seller's Phone Number</div>
+              <div class="seller-option-sub">You have the seller's number — we'll coordinate with them</div>
+            </div>
+          </label>
+          <label class="seller-option" id="opt-findme" onclick="selectSeller('findme')">
+            <input type="radio" name="sellerType" value="findme" />
+            <div>
+              <div class="seller-option-label">🔍 Find Me the Best Deal</div>
+              <div class="seller-option-sub">I don't have a specific seller — Kevin & Klein will find the best one</div>
+            </div>
+          </label>
         </div>
-        <div class="form-group form-full">
-          <label>Additional Notes</label>
-          <textarea id="f-notes" placeholder="Anything else we should know? e.g. payment method preference (MTN/Airtel), special packaging, or instructions for the seller." style="min-height:80px"></textarea>
+
+        <div id="sellerInputWrap"></div>
+
+        <div class="form-group" style="margin-top:8px">
+          <label>Additional Notes (optional)</label>
+          <textarea id="f-notes" placeholder="e.g. prefer MTN Mobile Money, special packaging needed, or any other instructions" style="min-height:80px"></textarea>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="prevStep(3)">← Back</button>
+          <button class="btn-next" onclick="nextStep(3)">Review Order →</button>
         </div>
       </div>
 
-      <hr class="form-divider" />
-      <button class="btn-submit" onclick="submitOrder()">
-        📱 Send Order via WhatsApp
-      </button>
-      <p class="form-footer-note">By submitting, you agree to be contacted on WhatsApp. No sign-up required — just fill and send.</p>
-    </div>
+      <!-- STEP 4: Review & Send -->
+      <div class="form-step" id="step-4">
+        <div class="step-heading">
+          <h3>✅ Review Your Order</h3>
+          <p>Check everything below. Once you hit Send, your order goes straight to our WhatsApp and we'll confirm within hours.</p>
+        </div>
+
+        <div class="whatsapp-notice">
+          <span style="font-size:1.4rem">💬</span>
+          <div><strong>Sending to WhatsApp:</strong> Your order details will open in WhatsApp, ready to send to our team on <strong>+256 779 710 365</strong>.</div>
+        </div>
+
+        <div class="summary-card" id="summaryCard">
+          <!-- filled by JS -->
+        </div>
+
+        <button class="btn-submit-final" onclick="submitOrder()">
+          📱 Send Order via WhatsApp
+        </button>
+        <p style="text-align:center;font-size:0.78rem;color:var(--text-muted);margin-top:14px">No sign-up required. Your details are only shared with Kevin &amp; Klein Logistics.</p>
+        <div class="form-nav" style="margin-top:16px;justify-content:flex-start">
+          <button class="btn-back" onclick="prevStep(4)">← Edit Order</button>
+        </div>
+      </div>
+
+    </div><!-- end order-form -->
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══ FOOTER ═══ -->
 <footer>
   <div class="footer-brand">
     <a href="#" class="nav-logo">K&amp;<span style="color:white">K</span> LOGISTICS</a>
     <p class="footer-tagline">Uganda's trusted procurement and delivery service. We buy it. We verify it. You receive it.</p>
   </div>
   <div class="footer-col">
-    <h4>Services</h4>
+    <h4>Navigate</h4>
     <ul>
       <li><a href="#how">How It Works</a></li>
-      <li><a href="#categories">Product Categories</a></li>
+      <li><a href="#categories">Categories</a></li>
       <li><a href="#why">Why Choose Us</a></li>
       <li><a href="#order">Place an Order</a></li>
     </ul>
   </div>
   <div class="footer-col">
-    <h4>Categories</h4>
+    <h4>Top Categories</h4>
     <ul>
       <li><a href="#order">Health &amp; Pharmacy</a></li>
       <li><a href="#order">Electronics</a></li>
@@ -963,12 +790,10 @@
   </div>
   <div class="footer-col">
     <h4>Contact Us</h4>
-    <a href="https://wa.me/256779710365" target="_blank" class="footer-whatsapp">
-      💬 WhatsApp Us
-    </a>
+    <a href="https://wa.me/256779710365" target="_blank" class="footer-wa">💬 WhatsApp Us</a>
     <ul style="margin-top:14px">
       <li><a href="tel:+256779710365">+256 779 710 365</a></li>
-      <li><a href="#">Based in Kampala, Uganda</a></li>
+      <li><a href="#">Kampala, Uganda 🇺🇬</a></li>
     </ul>
   </div>
 </footer>
@@ -977,71 +802,288 @@
   <p>Serving all districts of Uganda 🇺🇬</p>
 </div>
 
-<!-- FLOATING WHATSAPP -->
-<a href="https://wa.me/256779710365" target="_blank" class="float-wa" title="Chat with us on WhatsApp">
-  <div class="float-wa-pulse"></div>
-  💬
+<a href="https://wa.me/256779710365" target="_blank" class="float-wa" title="Chat on WhatsApp">
+  <div class="float-wa-pulse"></div>💬
 </a>
 
 <script>
-  // Scroll reveal
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
+  /* ── SIDE MENU ── */
+  function openMenu() {
+    document.getElementById('sideMenu').classList.add('open');
+    document.getElementById('sideOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    document.getElementById('sideMenu').classList.remove('open');
+    document.getElementById('sideOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── REVEAL ── */
+  const revEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {
       if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-        observer.unobserve(e.target);
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
+        obs.unobserve(e.target);
       }
     });
-  }, { threshold: 0.1 });
-  revealEls.forEach(el => observer.observe(el));
+  }, { threshold: 0.08 });
+  revEls.forEach(el => obs.observe(el));
 
-  // WhatsApp order form
-  function submitOrder() {
+  /* ── MULTI-STEP FORM ── */
+  let currentStep = 1;
+  const totalSteps = 4;
+
+  function updateProgress(step) {
+    for (let i = 1; i <= totalSteps; i++) {
+      const dot = document.getElementById('dot-' + i);
+      const lbl = document.getElementById('lbl-' + i);
+      dot.classList.remove('active', 'done');
+      lbl.classList.remove('active');
+      if (i < step) dot.classList.add('done'), dot.innerHTML = '✓';
+      else if (i === step) { dot.classList.add('active'); dot.innerHTML = i; lbl.classList.add('active'); }
+      else dot.innerHTML = i;
+    }
+    const pct = ((step - 1) / (totalSteps - 1)) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function showStep(step) {
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + step).classList.add('active');
+    updateProgress(step);
+    currentStep = step;
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function goToStep(step) {
+    if (step <= currentStep) showStep(step);
+  }
+
+  function nextStep(from) {
+    if (!validateStep(from)) return;
+    if (from === totalSteps - 1) buildSummary();
+    showStep(from + 1);
+  }
+  function prevStep(from) { showStep(from - 1); }
+
+  function validateStep(step) {
+    if (step === 1) {
+      const name = document.getElementById('f-name').value.trim();
+      const wa = document.getElementById('f-whatsapp').value.trim();
+      const dist = document.getElementById('f-district').value;
+      const town = document.getElementById('f-town').value.trim();
+      if (!name) { alert('Please enter your name.'); return false; }
+      if (!wa) { alert('Please enter your WhatsApp number.'); return false; }
+      if (!dist) { alert('Please select your district.'); return false; }
+      if (!town) { alert('Please enter your town or village.'); return false; }
+    }
+    if (step === 2) {
+      const cat = document.getElementById('f-category').value;
+      const prod = document.getElementById('f-product').value.trim();
+      if (!cat) { alert('Please select a product category.'); return false; }
+      if (!prod) { alert('Please describe what you need.'); return false; }
+      const budgetMode = document.getElementById('budgetField').classList.contains('hide') ? 'unknown' : 'known';
+      if (budgetMode === 'known') {
+        const b = parseInt(document.getElementById('f-budget').value);
+        if (!b || b < 10000) { alert('Minimum order is UGX 10,000. Please enter a valid budget.'); return false; }
+      } else {
+        const br = document.getElementById('f-budget-range').value.trim();
+        if (!br) { alert('Please enter a budget range or description.'); return false; }
+      }
+    }
+    if (step === 3) {
+      const sel = document.querySelector('input[name="sellerType"]:checked');
+      if (!sel) { alert('Please choose how we should find your seller.'); return false; }
+      if (sel.value !== 'findme') {
+        const inp = document.getElementById('sellerDetailInput');
+        if (inp && !inp.value.trim()) {
+          alert('Please fill in the seller detail.'); return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /* Budget toggle */
+  function setBudgetMode(mode) {
+    const field = document.getElementById('budgetField');
+    const unknown = document.getElementById('budgetUnknown');
+    const btnKnow = document.getElementById('btn-know-price');
+    const btnDont = document.getElementById('btn-dont-know');
+    if (mode === 'known') {
+      field.classList.remove('hide'); unknown.classList.remove('show');
+      btnKnow.classList.add('active'); btnDont.classList.remove('active');
+    } else {
+      field.classList.add('hide'); unknown.classList.add('show');
+      btnDont.classList.add('active'); btnKnow.classList.remove('active');
+    }
+  }
+
+  /* Seller type */
+  function selectSeller(type) {
+    document.querySelectorAll('.seller-option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('opt-' + type).classList.add('selected');
+    const wrap = document.getElementById('sellerInputWrap');
+    const labels = {
+      shop: ['Shop Name &amp; Location', 'e.g. Quality Chemist, Kampala Road, next to Centenary Bank'],
+      tiktok: ['TikTok Link', 'e.g. https://www.tiktok.com/@seller/video/...'],
+      facebook: ['Facebook Link', 'e.g. https://www.facebook.com/sellerpage or marketplace link'],
+      phone: ['Seller\'s Phone Number', 'e.g. 0772456789'],
+      findme: null
+    };
+    if (labels[type]) {
+      wrap.innerHTML = `<div class="form-group seller-detail-field show">
+        <label>${labels[type][0]} <span class="req">*</span></label>
+        <input type="text" id="sellerDetailInput" placeholder="${labels[type][1]}" />
+      </div>`;
+    } else {
+      wrap.innerHTML = '<div style="background:#f0f9f5;border-radius:10px;padding:14px 18px;font-size:0.87rem;color:#155C44;border:1px solid #b2dfcc;margin-bottom:16px">✅ <strong>Got it!</strong> We\'ll search for the best price and seller in Kampala and confirm with you before buying.</div>';
+    }
+  }
+
+  /* Photo upload */
+  let uploadedPhotos = [];
+  function handlePhotos(e) {
+    const files = Array.from(e.target.files).slice(0, 5);
+    uploadedPhotos = files;
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = '';
+    files.forEach((file, i) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'photo-thumb';
+        thumb.innerHTML = `<img src="${ev.target.result}" alt="photo ${i+1}" /><button class="photo-thumb-remove" onclick="removePhoto(${i})">✕</button>`;
+        preview.appendChild(thumb);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function removePhoto(i) {
+    uploadedPhotos.splice(i, 1);
+    const preview = document.getElementById('photoPreview');
+    preview.children[i].remove();
+  }
+
+  /* Build summary */
+  function buildSummary() {
     const name = document.getElementById('f-name').value.trim();
-    const whatsapp = document.getElementById('f-whatsapp').value.trim();
+    const wa = document.getElementById('f-whatsapp').value.trim();
     const district = document.getElementById('f-district').value;
     const town = document.getElementById('f-town').value.trim();
-    const category = document.getElementById('f-category').value;
-    const budget = document.getElementById('f-budget').value.trim();
-    const product = document.getElementById('f-product').value.trim();
-    const shop = document.getElementById('f-shop').value.trim();
     const delivery = document.getElementById('f-delivery').value;
     const urgency = document.getElementById('f-urgency').value;
+    const cat = document.getElementById('f-category').value;
+    const prod = document.getElementById('f-product').value.trim();
     const notes = document.getElementById('f-notes').value.trim();
+    const selType = document.querySelector('input[name="sellerType"]:checked');
+    const selDetail = document.getElementById('sellerDetailInput');
+    const budgetKnown = !document.getElementById('budgetField').classList.contains('hide');
+    const budget = budgetKnown ? parseInt(document.getElementById('f-budget').value) : null;
+    const budgetRange = document.getElementById('f-budget-range').value;
+    const photoCount = uploadedPhotos.length;
 
-    if (!name || !whatsapp || !district || !town || !category || !budget || !product) {
-      alert('Please fill in all required fields (marked with *).');
-      return;
-    }
-    if (parseInt(budget) < 10000) {
-      alert('Minimum order amount is UGX 10,000.');
-      return;
+    let budgetStr, feeStr, totalStr;
+    if (budgetKnown && budget) {
+      const fee = Math.round(budget * 0.1);
+      budgetStr = 'UGX ' + budget.toLocaleString();
+      feeStr = 'UGX ' + fee.toLocaleString() + ' (10%)';
+      totalStr = 'UGX ' + (budget + fee).toLocaleString();
+    } else {
+      budgetStr = budgetRange || 'Not specified';
+      feeStr = '10% of final price (confirmed on WhatsApp)';
+      totalStr = 'To be confirmed';
     }
 
-    const fee = Math.round(parseInt(budget) * 0.1);
-    const total = parseInt(budget) + fee;
+    const sellerTypeLabels = { shop: '🏪 Physical Shop', tiktok: '🎵 TikTok Link', facebook: '📘 Facebook Link', phone: '📞 Phone Number', findme: '🔍 Find Best Deal' };
+    const sellerLabel = selType ? sellerTypeLabels[selType.value] : '—';
+    const sellerValue = (selType && selType.value !== 'findme' && selDetail) ? selDetail.value : (selType?.value === 'findme' ? 'Kevin & Klein will find' : '—');
+
+    document.getElementById('summaryCard').innerHTML = `
+      <h4>Customer</h4>
+      <div class="summary-row"><span class="label">Name</span><span class="value">${name}</span></div>
+      <div class="summary-row"><span class="label">WhatsApp</span><span class="value">${wa}</span></div>
+      <div class="summary-row"><span class="label">Location</span><span class="value">${town}, ${district}</span></div>
+      <div class="summary-row"><span class="label">Delivery</span><span class="value">${delivery}</span></div>
+      <div class="summary-row"><span class="label">Urgency</span><span class="value">${urgency}</span></div>
+      <h4 style="margin-top:18px">Product</h4>
+      <div class="summary-row"><span class="label">Category</span><span class="value">${cat}</span></div>
+      <div class="summary-row"><span class="label">Description</span><span class="value">${prod}</span></div>
+      <div class="summary-row"><span class="label">Photos attached</span><span class="value">${photoCount > 0 ? photoCount + ' image(s)' : 'None'}</span></div>
+      <h4 style="margin-top:18px">Seller</h4>
+      <div class="summary-row"><span class="label">Type</span><span class="value">${sellerLabel}</span></div>
+      <div class="summary-row"><span class="label">Detail</span><span class="value">${sellerValue}</span></div>
+      ${notes ? `<div class="summary-row"><span class="label">Notes</span><span class="value">${notes}</span></div>` : ''}
+      <div class="summary-fee-row"><span>Budget</span><span class="fee-amount">${budgetStr}</span></div>
+      <div class="summary-row" style="font-size:0.83rem"><span class="label">Our Service Fee</span><span class="value" style="color:var(--green-light)">${feeStr}</span></div>
+      <div class="summary-row" style="font-weight:700"><span class="label">Estimated Total</span><span class="value" style="color:var(--green)">${totalStr}</span></div>
+    `;
+  }
+
+  /* Final Submit → WhatsApp */
+  function submitOrder() {
+    const name = document.getElementById('f-name').value.trim();
+    const wa = document.getElementById('f-whatsapp').value.trim();
+    const district = document.getElementById('f-district').value;
+    const town = document.getElementById('f-town').value.trim();
+    const delivery = document.getElementById('f-delivery').value;
+    const urgency = document.getElementById('f-urgency').value;
+    const cat = document.getElementById('f-category').value;
+    const prod = document.getElementById('f-product').value.trim();
+    const notes = document.getElementById('f-notes').value.trim();
+    const selType = document.querySelector('input[name="sellerType"]:checked');
+    const selDetail = document.getElementById('sellerDetailInput');
+    const budgetKnown = !document.getElementById('budgetField').classList.contains('hide');
+    const budget = budgetKnown ? parseInt(document.getElementById('f-budget').value) : null;
+    const budgetRange = document.getElementById('f-budget-range').value;
+    const photoCount = uploadedPhotos.length;
+
+    const sellerTypeLabels = { shop: 'Physical Shop', tiktok: 'TikTok Link', facebook: 'Facebook Link', phone: "Seller's Phone", findme: 'Find Best Deal' };
+    const sellerType = selType ? sellerTypeLabels[selType.value] : 'Not specified';
+    const sellerDetail = (selType && selType.value !== 'findme' && selDetail) ? selDetail.value : 'Kevin & Klein to find best deal';
+
+    let budgetLine, feeLine, totalLine;
+    if (budgetKnown && budget) {
+      const fee = Math.round(budget * 0.1);
+      budgetLine = `UGX ${budget.toLocaleString()}`;
+      feeLine = `UGX ${fee.toLocaleString()} (10%)`;
+      totalLine = `UGX ${(budget + fee).toLocaleString()}`;
+    } else {
+      budgetLine = budgetRange || 'Not sure — please advise';
+      feeLine = '10% of final price (to be confirmed)';
+      totalLine = 'To be confirmed on WhatsApp';
+    }
 
     const msg = `🛍️ *NEW ORDER — Kevin & Klein Logistics*
 ━━━━━━━━━━━━━━━━━━
-👤 *Customer:* ${name}
-📱 *WhatsApp:* ${whatsapp}
+👤 *Name:* ${name}
+📱 *WhatsApp:* ${wa}
 📍 *Location:* ${town}, ${district} District
 
-🗂️ *PRODUCT DETAILS*
+📦 *PRODUCT*
 ━━━━━━━━━━━━━━━━━━
-📦 *Category:* ${category}
-🔍 *Description:* ${product}
-${shop ? `🏪 *Shop/Seller:* ${shop}` : ''}
-💰 *Budget:* UGX ${parseInt(budget).toLocaleString()}
-📊 *Service Fee (10%):* UGX ${fee.toLocaleString()}
-🧾 *Estimated Total:* UGX ${total.toLocaleString()}
+🗂️ *Category:* ${cat}
+🔍 *Description:* ${prod}
+${photoCount > 0 ? `📷 *Photos:* ${photoCount} image(s) — customer will send on WhatsApp` : ''}
+
+🏪 *SELLER INFO*
+━━━━━━━━━━━━━━━━━━
+📌 *Seller Type:* ${sellerType}
+🔗 *Detail:* ${sellerDetail}
 
 🚚 *DELIVERY*
 ━━━━━━━━━━━━━━━━━━
 📬 *Method:* ${delivery}
 ⏱️ *Urgency:* ${urgency}
 ${notes ? `📝 *Notes:* ${notes}` : ''}
+
+💰 *PRICING*
+━━━━━━━━━━━━━━━━━━
+💵 *Product Budget:* ${budgetLine}
+📊 *Service Fee:* ${feeLine}
+🧾 *Est. Total:* ${totalLine}
 ━━━━━━━━━━━━━━━━━━
 _Submitted via K&K Logistics website_`;
 
