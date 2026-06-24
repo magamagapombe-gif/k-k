@@ -410,39 +410,51 @@ footer{background:var(--charcoal);padding:56px 60px;display:flex;gap:44px;flex-w
         </div>
         <button class="btn-primary" onclick="showPage('categories')" style="white-space:nowrap">See All Categories →</button>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px">
-        ${[
-          ['👗','Fashion & Shoes'],['👠','Footwear'],['💍','Jewellery'],['📱','Electronics'],
-          ['💊','Pharmacy'],['✨','Skincare'],['🍼','Baby & Kids'],['🌾','Agriculture'],
-          ['🚗','Auto Parts'],['💻','Computers'],['🔌','Solar & Electrical'],['🏗️','Hardware']
-        ].map(([e,n])=>`<div onclick="showPage('categories')" style="background:var(--white);border-radius:14px;padding:20px 14px;text-align:center;border:2px solid var(--cream-dark);cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--cream-dark)';this.style.transform=''"><div style="font-size:2rem;margin-bottom:8px">${e}</div><div style="font-size:.78rem;font-weight:700;color:var(--green)">${n}</div></div>`).join('')}
-      </div>
+      <div id="homeCatGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px"></div>
     </div>
   </section>
 
   <!-- MINI WHY -->
-  <section style="padding:80px 60px;background:var(--white)">
-    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
-      <div style="background:var(--cream);border-radius:16px;padding:32px 24px;text-align:center">
-        <div style="font-size:2.5rem;margin-bottom:12px">🛡️</div>
-        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--green);margin-bottom:8px">Zero Fraud</h3>
-        <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6">We physically verify every product before your money changes hands.</p>
+  <section style="padding:64px 24px;background:var(--white)">
+    <div style="max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:14px">
+      <div class="trust-row-card">
+        <div class="trust-row-icon">🛡️</div>
+        <div class="trust-row-body">
+          <div class="trust-row-title">Zero Fraud</div>
+          <div class="trust-row-desc">We physically visit the shop and verify every product before your money moves.</div>
+        </div>
+        <div class="trust-row-badge">✅ Verified</div>
       </div>
-      <div style="background:var(--cream);border-radius:16px;padding:32px 24px;text-align:center">
-        <div style="font-size:2.5rem;margin-bottom:12px">📸</div>
-        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--green);margin-bottom:8px">Photo Proof</h3>
-        <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6">We send you photos of the actual item before dispatching. No surprises.</p>
+      <div class="trust-row-card">
+        <div class="trust-row-icon">📸</div>
+        <div class="trust-row-body">
+          <div class="trust-row-title">Photo Proof</div>
+          <div class="trust-row-desc">Real photos of your item sent before dispatch. What you see is what arrives.</div>
+        </div>
+        <div class="trust-row-badge">📷 Always</div>
       </div>
-      <div style="background:var(--cream);border-radius:16px;padding:32px 24px;text-align:center">
-        <div style="font-size:2.5rem;margin-bottom:12px">💬</div>
-        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--green);margin-bottom:8px">WhatsApp All the Way</h3>
-        <p style="font-size:.85rem;color:var(--text-muted);line-height:1.6">Every update from confirmation to delivery arrives on your WhatsApp.</p>
+      <div class="trust-row-card">
+        <div class="trust-row-icon">💬</div>
+        <div class="trust-row-body">
+          <div class="trust-row-title">WhatsApp Updates</div>
+          <div class="trust-row-desc">Every step — confirmation, photos, dispatch — straight to your WhatsApp.</div>
+        </div>
+        <div class="trust-row-badge">📱 Live</div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:44px">
+    <div style="text-align:center;margin-top:36px">
       <button class="btn-primary" onclick="showPage('why')">Learn More About Us →</button>
     </div>
   </section>
+  <style>
+    .trust-row-card{display:flex;align-items:center;gap:16px;background:var(--cream);border-radius:16px;padding:20px 24px;border:2px solid var(--cream-dark);transition:border-color .2s,box-shadow .2s}
+    .trust-row-card:hover{border-color:var(--gold);box-shadow:0 4px 20px rgba(13,59,46,.08)}
+    .trust-row-icon{font-size:2rem;flex-shrink:0;width:48px;text-align:center}
+    .trust-row-body{flex:1;min-width:0}
+    .trust-row-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--green);letter-spacing:.5px;margin-bottom:2px}
+    .trust-row-desc{font-size:.82rem;color:var(--text-muted);line-height:1.5}
+    .trust-row-badge{flex-shrink:0;background:var(--green);color:var(--white);font-size:.72rem;font-weight:700;padding:6px 14px;border-radius:50px;white-space:nowrap;letter-spacing:.5px}
+  </style>
 
   <!-- FOOTER on home -->
   <footer>
@@ -1235,11 +1247,33 @@ _Submitted via K&K Logistics website_`;
 }
 
 /* ═══════════════════════
+   HOME CATEGORY GRID
+═══════════════════════ */
+function buildHomeCatGrid() {
+  const items = [
+    ['👗','Fashion & Clothing'],['👠','Footwear & Shoes'],['💍','Jewellery'],['📱','Electronics'],
+    ['💊','Pharmacy'],['✨','Skincare & Beauty'],['🍼','Baby & Kids'],['🌾','Agriculture'],
+    ['🚗','Auto Parts'],['💻','Computers & IT'],['🔌','Solar & Electrical'],['🏗️','Hardware']
+  ];
+  const grid = document.getElementById('homeCatGrid');
+  if(!grid) return;
+  grid.innerHTML = items.map(([e,n]) => `
+    <div onclick="showPage('categories')"
+      style="background:var(--white);border-radius:14px;padding:20px 14px;text-align:center;border:2px solid var(--cream-dark);cursor:pointer;transition:all .2s"
+      onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)'"
+      onmouseout="this.style.borderColor='var(--cream-dark)';this.style.transform=''">
+      <div style="font-size:2rem;margin-bottom:8px">${e}</div>
+      <div style="font-size:.78rem;font-weight:700;color:var(--green)">${n}</div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════
    INIT
 ═══════════════════════ */
 buildHowCarousel();
 buildFullCategories();
 buildTestimonials();
+buildHomeCatGrid();
 updateNavActive('home');
 </script>
 </body>
